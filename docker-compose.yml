@@ -1,0 +1,61 @@
+services:
+  frontend:
+    build: ./event-frontend
+    container_name: event-frontend-dev
+    ports:
+      - "${FRONTEND_PORT}:3001"
+    volumes:
+      - ./event-frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      NEXT_PUBLIC_MIDTRANS_SNAP_URL: ${NEXT_PUBLIC_MIDTRANS_SNAP_URL}
+      NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: ${NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+    command: npm run dev
+    depends_on:
+      - backend
+
+  backend:
+    build: ./event-backend
+    container_name: event-backend-dev
+    ports:
+      - "${BACKEND_PORT}:3000"
+    volumes:
+      - ./event-backend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      BACKEND_PORT: ${BACKEND_PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET: ${SECRET}
+      EMAIL_SMTP_SECURE: ${EMAIL_SMTP_SECURE}
+      EMAIL_SMTP_PASS: ${EMAIL_SMTP_PASS}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      EMAIL_SMTP_SERVICE_NAME: ${EMAIL_SMTP_SERVICE_NAME}
+      CLIENT_HOST: ${CLIENT_HOST}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY}
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY}
+      MIDTRANS_TRANSACTION_URL: ${MIDTRANS_TRANSACTION_URL}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+    command: npm run dev
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6
+    container_name: event-mongo-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
